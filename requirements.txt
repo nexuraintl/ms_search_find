@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+motor
+pymongo
+redis
+python-dotenv
+pydantic
+pydantic-settings
+structlog
+httpx
+pytest
+pytest-asyncio
+slowapi
+prometheus-fastapi-instrumentator
+aiomysql==0.2.0
