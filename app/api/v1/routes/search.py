@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query, HTTPException
-
+import os
 from app.services.search_service import SearchService
 from app.repositories.search_repository import SearchRepository
 from app.schemas.search_schema import SearchCreateSchema
