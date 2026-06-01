@@ -57,3 +57,12 @@ async def create_search(data: SearchCreateSchema):
             status_code=500,
             detail=str(e)
         )
+
+@router.get("/debug-env")
+async def debug_env():
+    return {
+        "DB1_HOST": os.getenv("DB1_HOST"),
+        "DB1_NAME": os.getenv("DB1_NAME"),
+        "DB1_USER": os.getenv("DB1_USER"),
+        "MYSQL_USER": os.getenv("MYSQL_USER"),
+    }
