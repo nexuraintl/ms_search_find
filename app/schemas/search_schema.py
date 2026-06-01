@@ -12,5 +12,5 @@ class SearchCreateSchema(BaseModel):
     url: str
     estado: Optional[str] = "activo"
     fecha_actualizacion: Optional[datetime] = None
-
+    client_id : int
     metadata: Dict[str, Any] = Field(default_factory=dict)
