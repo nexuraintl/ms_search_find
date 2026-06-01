@@ -100,7 +100,8 @@ async def get_collection(client_id: int):
             f"mongodb://{username}:"
             f"{password}@"
             f"{config['hosting']}:"
-            f"{config['puerto']}"
+            f"{config['puerto']}/"
+            f"{config['nombreBaseDeDatos']}"
         )
 
         mongo_clients[client_id] = (
