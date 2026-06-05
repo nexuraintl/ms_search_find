@@ -17,6 +17,7 @@ class SearchCreateSchema(BaseModel):
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
 class SearchUpdateSchema(BaseModel):
+    client_id : int
     modulo: str
     id_rel: int
     titulo: Optional[str] = None
