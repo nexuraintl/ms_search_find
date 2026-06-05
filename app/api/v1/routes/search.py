@@ -2,7 +2,11 @@ from fastapi import APIRouter, Query, HTTPException
 import os
 from app.services.search_service import SearchService
 from app.repositories.search_repository import SearchRepository
-from app.schemas.search_schema import SearchCreateSchema
+from app.schemas.search_schema import (
+    SearchCreateSchema,
+    SearchUpdateSchema,
+    SearchDeleteSchema
+)
 
 router = APIRouter()
 
@@ -57,3 +61,37 @@ async def create_search(data: SearchCreateSchema):
             status_code=500,
             detail=str(e)
         )
+
+# PUT /search
+@router.put("/update-search")
+async def update_search(
+    data: SearchUpdateSchema
+):
+
+    result = await service.update(
+        data
+    )
+
+    return {
+        "success": True,
+        "message": "Registro actualizado",
+        "data": result
+    }
+    
+# DELETE /search
+@router.delete("/delete-search")
+async def delete_search(
+    data: SearchDeleteSchema
+):
+
+    result = await service.delete(
+        data.client_id,
+        data.modulo,
+        data.id_rel
+    )
+
+    return {
+        "success": True,
+        "message": "Registro eliminado",
+        "data": result
+    }

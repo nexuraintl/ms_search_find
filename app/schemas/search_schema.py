@@ -5,6 +5,7 @@ from datetime import datetime
 
 class SearchCreateSchema(BaseModel):
     modulo: str
+    id_rel: int
     titulo: str
     contenido: str
     resumen: str
@@ -14,3 +15,18 @@ class SearchCreateSchema(BaseModel):
     fecha_actualizacion: Optional[datetime] = None
     client_id : int
     metadata: Dict[str, Any] = Field(default_factory=dict)
+
+class SearchUpdateSchema(BaseModel):
+    modulo: str
+    id_rel: int
+    titulo: Optional[str] = None
+    contenido: Optional[str] = None
+    resumen: Optional[str] = None
+    tags: Optional[list[str]] = None
+    estado: Optional[str] = None
+    url: Optional[str] = None
+    metadata: Optional[dict] = None
+
+class SearchDeleteSchema(BaseModel):
+    modulo: str
+    id_rel: int

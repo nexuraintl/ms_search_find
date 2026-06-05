@@ -153,3 +153,57 @@ class SearchRepository:
         document["_id"] = str(document["_id"])
 
         return document
+
+    async def update(
+        self,
+        client_id: int,
+        data: dict
+    ):
+
+        collection = await get_collection(
+            client_id
+        )
+
+        modulo = data.pop("modulo")
+        id_rel = data.pop("id_rel")
+
+        data["fecha_actualizacion"] = (
+            datetime.utcnow()
+        )
+
+        result = await collection.update_one(
+            {
+                "modulo": modulo,
+                "id_rel": id_rel
+            },
+            {
+                "$set": data
+            }
+        )
+
+        return {
+            "matched_count": result.matched_count,
+            "modified_count": result.modified_count
+        }
+    
+    async def delete(
+        self,
+        client_id: int,
+        modulo: str,
+        id_rel: int
+    ):
+
+        collection = await get_collection(
+            client_id
+        )
+
+        result = await collection.delete_one(
+            {
+                "modulo": modulo,
+                "id_rel": id_rel
+            }
+        )
+
+        return {
+            "deleted_count": result.deleted_count
+        }
