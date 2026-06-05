@@ -94,8 +94,14 @@ class SearchRepository:
 
         totals_by_module = {}
 
-        for item in module_totals_raw:
-            totals_by_module[item["_id"]] = item["total"]
+        for item in module_totals:
+
+            module_name = item["_id"]
+
+            if modulo and module_name == modulo:
+                continue
+
+            totals_by_module[module_name] = item["total"]
 
         # -----------------------------------
         # SERIALIZACION
