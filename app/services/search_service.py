@@ -22,3 +22,27 @@ class SearchService:
             page=page,
             limit=limit
         )
+    
+    async def update(
+        self,
+        data
+    ):
+        return await self.repository.update(
+            data.client_id,
+            data.dict(
+                exclude_none=True
+            )
+        )
+
+
+    async def delete(
+        self,
+        client_id: int,
+        modulo: str,
+        id_rel: int
+    ):
+        return await self.repository.delete(
+            client_id,
+            modulo,
+            id_rel
+        )
