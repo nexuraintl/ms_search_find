@@ -29,5 +29,6 @@ class SearchUpdateSchema(BaseModel):
     metadata: Optional[dict] = None
 
 class SearchDeleteSchema(BaseModel):
+    client_id : int
     modulo: str
     id_rel: int
