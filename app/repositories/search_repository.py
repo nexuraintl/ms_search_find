@@ -94,7 +94,7 @@ class SearchRepository:
 
         totals_by_module = {}
 
-        for item in module_totals:
+        for item in module_totals_raw:
 
             module_name = item["_id"]
 
