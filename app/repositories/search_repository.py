@@ -140,14 +140,22 @@ class SearchRepository:
 
         collection = await get_collection(data["client_id"])
 
-        data["fecha_actualizacion"] = datetime.now(
-            timezone.utc
+        data["fecha_actualizacion"] = datetime.now(timezone.utc)
+
+        await collection.update_one(
+            {
+                "modulo": data["modulo"],
+                "id_rel": data["id_rel"]
+            },
+            {
+                "$setOnInsert": data
+            },
+            upsert=True
         )
 
-        result = await collection.insert_one(data)
-
         document = await collection.find_one({
-            "_id": result.inserted_id
+            "modulo": data["modulo"],
+            "id_rel": data["id_rel"]
         })
 
         document["_id"] = str(document["_id"])
