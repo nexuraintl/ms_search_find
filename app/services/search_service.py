@@ -46,3 +46,33 @@ class SearchService:
             modulo,
             id_rel
         )
+    
+    async def activate(
+        self,
+        data
+    ):
+
+        return await self.repository.activate(
+
+            data.client_id,
+
+            data.modulo,
+
+            data.conditions
+
+        )
+    
+    async def deactivate(
+        self,
+        data
+    ):
+
+        return await self.repository.deactivate(
+
+            data.client_id,
+
+            data.modulo,
+
+            data.conditions
+
+        )
