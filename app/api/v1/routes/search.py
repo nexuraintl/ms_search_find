@@ -5,7 +5,8 @@ from app.repositories.search_repository import SearchRepository
 from app.schemas.search_schema import (
     SearchCreateSchema,
     SearchUpdateSchema,
-    SearchDeleteSchema
+    SearchDeleteSchema,
+    SearchStatusSchema
 )
 
 router = APIRouter()
@@ -94,4 +95,44 @@ async def delete_search(
         "success": True,
         "message": "Registro eliminado",
         "data": result
+    }
+
+@router.patch("/activate-search")
+async def activate_search(
+    data: SearchStatusSchema
+):
+
+    result = await service.activate(
+        data
+    )
+
+    return {
+
+        "success": True,
+
+        "message":
+            "Registros activados",
+
+        "data": result
+
+    }
+
+@router.patch("/deactivate-search")
+async def deactivate_search(
+    data: SearchStatusSchema
+):
+
+    result = await service.deactivate(
+        data
+    )
+
+    return {
+
+        "success": True,
+
+        "message":
+            "Registros desactivados",
+
+        "data": result
+
     }
