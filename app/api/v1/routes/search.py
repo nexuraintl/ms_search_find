@@ -17,6 +17,7 @@ repository = SearchRepository()
 # GET /search
 @router.get("/find")
 async def search(
+    request: Request,
     client_id: int = Query(...),
     q: str = Query(...),
     modulo: str | None = Query(default=None),
