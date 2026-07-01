@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Query, HTTPException
-import os
+from fastapi import APIRouter, Query, HTTPException, Request
 from app.services.search_service import SearchService
 from app.repositories.search_repository import SearchRepository
 from app.schemas.search_schema import (
@@ -25,7 +24,7 @@ async def search(
     limit: int = Query(10, ge=1, le=100)
 ):
 
-     reserved = {
+    reserved = {
         "q",
         "page",
         "limit",
