@@ -6,13 +6,39 @@ from app.core.database import get_collection
 
 class SearchRepository:
 
+    def parse_value(value: str):
+
+        value = value.strip()
+
+        if value.lower() == "true":
+            return True
+
+        if value.lower() == "false":
+            return False
+
+        if value.lower() == "null":
+            return None
+
+        try:
+            return int(value)
+        except ValueError:
+            pass
+
+        try:
+            return float(value)
+        except ValueError:
+            pass
+
+        return value
+
     async def search(
         self,
         client_id: int,
         q: str,
         modulo: str | None,
         page: int,
-        limit: int
+        limit: int,
+        filters: dict
     ):
 
         collection = await get_collection(client_id)
@@ -38,6 +64,21 @@ class SearchRepository:
 
         if modulo:
             query_main["modulo"] = modulo
+        
+        for key, value in filters.items():
+
+            if "," in value:
+
+                query_main[key] = {
+                    "$in": [
+                        parse_value(v)
+                        for v in value.split(",")
+                    ]
+                }
+
+            else:
+
+                query_main[key] = parse_value(value)
 
         # -----------------------------------
         # TOTAL MODULO

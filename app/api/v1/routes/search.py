@@ -24,19 +24,35 @@ async def search(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100)
 ):
+
+     reserved = {
+        "q",
+        "page",
+        "limit",
+        "modulo",
+        "client_id"
+    }
+
+    filters = {}
+
+    for key, value in request.query_params.items():
+        if key not in reserved:
+            filters[key] = value
    
     data = await service.search(
         client_id=client_id,
         q=q,
         modulo=modulo,
         page=page,
-        limit=limit
+        limit=limit,
+        filters=filters
     )
 
     return {
         "success": True,
         "query": q,
         "modulo": modulo,
+        "filters": filters,
         "totals_by_module": data["totals_by_module"],
         "pagination": data["pagination"],
         "results": data["results"]
