@@ -6,6 +6,7 @@ from app.core.database import get_collection
 
 class SearchRepository:
 
+    @staticmethod
     def parse_value(value: str):
 
         value = value.strip()
@@ -71,14 +72,14 @@ class SearchRepository:
 
                 query_main[key] = {
                     "$in": [
-                        parse_value(v)
+                        self.parse_value(v)
                         for v in value.split(",")
                     ]
                 }
 
             else:
 
-                query_main[key] = parse_value(value)
+                query_main[key] = self.parse_value(value)
 
         # -----------------------------------
         # TOTAL MODULO
