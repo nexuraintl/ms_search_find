@@ -12,7 +12,8 @@ class SearchService:
         q: str,
         modulo: str,
         page: int,
-        limit: int
+        limit: int,
+        filters: dict
     ):
 
         return await self.repository.search(
@@ -20,7 +21,8 @@ class SearchService:
             q=q,
             modulo=modulo,
             page=page,
-            limit=limit
+            limit=limit,
+            filters=filters
         )
     
     async def update(
