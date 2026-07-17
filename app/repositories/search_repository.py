@@ -6,13 +6,40 @@ from app.core.database import get_collection
 
 class SearchRepository:
 
+    @staticmethod
+    def parse_value(value: str):
+
+        value = value.strip()
+
+        if value.lower() == "true":
+            return True
+
+        if value.lower() == "false":
+            return False
+
+        if value.lower() == "null":
+            return None
+
+        try:
+            return int(value)
+        except ValueError:
+            pass
+
+        try:
+            return float(value)
+        except ValueError:
+            pass
+
+        return value
+
     async def search(
         self,
         client_id: int,
         q: str,
         modulo: str | None,
         page: int,
-        limit: int
+        limit: int,
+        filters: dict
     ):
 
         collection = await get_collection(client_id)
@@ -38,6 +65,21 @@ class SearchRepository:
 
         if modulo:
             query_main["modulo"] = modulo
+        
+        for key, value in filters.items():
+
+            if "," in value:
+
+                query_main[key] = {
+                    "$in": [
+                        self.parse_value(v)
+                        for v in value.split(",")
+                    ]
+                }
+
+            else:
+
+                query_main[key] = self.parse_value(value)
 
         # -----------------------------------
         # TOTAL MODULO
@@ -214,4 +256,115 @@ class SearchRepository:
 
         return {
             "deleted_count": result.deleted_count
+        }
+    
+    def build_conditions_query(
+        self,
+        modulo: str,
+        conditions: dict
+    ):
+
+        query = {
+            "modulo": modulo
+        }
+
+        metadata = conditions.get(
+            "metadata",
+            {}
+        )
+
+        for field, values in metadata.items():
+
+            query[
+                f"metadata.{field}"
+            ] = {
+                "$in": values
+            }
+
+        return query
+    
+    async def activate(
+        self,
+        client_id: int,
+        modulo: str,
+        conditions: dict
+    ):
+
+        collection = await get_collection(
+            client_id
+        )
+
+        query = self.build_conditions_query(
+            modulo,
+            conditions
+        )
+
+        result = await collection.update_many(
+
+            query,
+
+            {
+                "$set": {
+
+                    "estado": "activo",
+
+                    "fecha_actualizacion":
+                        datetime.now(
+                            timezone.utc
+                        )
+
+                }
+            }
+
+        )
+
+        return {
+
+            "matched": result.matched_count,
+
+            "modified": result.modified_count
+
+        }
+    
+    async def deactivate(
+        self,
+        client_id: int,
+        modulo: str,
+        conditions: dict
+    ):
+
+        collection = await get_collection(
+            client_id
+        )
+
+        query = self.build_conditions_query(
+            modulo,
+            conditions
+        )
+
+        result = await collection.update_many(
+
+            query,
+
+            {
+                "$set": {
+
+                    "estado": "inactivo",
+
+                    "fecha_actualizacion":
+                        datetime.now(
+                            timezone.utc
+                        )
+
+                }
+            }
+
+        )
+
+        return {
+
+            "matched": result.matched_count,
+
+            "modified": result.modified_count
+
         }

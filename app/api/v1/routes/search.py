@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Query, HTTPException
-import os
+from fastapi import APIRouter, Query, HTTPException, Request
 from app.services.search_service import SearchService
 from app.repositories.search_repository import SearchRepository
 from app.schemas.search_schema import (
     SearchCreateSchema,
     SearchUpdateSchema,
-    SearchDeleteSchema
+    SearchDeleteSchema,
+    SearchStatusSchema
 )
 
 router = APIRouter()
@@ -17,25 +17,42 @@ repository = SearchRepository()
 # GET /search
 @router.get("/find")
 async def search(
+    request: Request,
     client_id: int = Query(...),
     q: str = Query(...),
     modulo: str | None = Query(default=None),
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100)
 ):
+
+    reserved = {
+        "q",
+        "page",
+        "limit",
+        "modulo",
+        "client_id"
+    }
+
+    filters = {}
+
+    for key, value in request.query_params.items():
+        if key not in reserved:
+            filters[key] = value
    
     data = await service.search(
         client_id=client_id,
         q=q,
         modulo=modulo,
         page=page,
-        limit=limit
+        limit=limit,
+        filters=filters
     )
 
     return {
         "success": True,
         "query": q,
         "modulo": modulo,
+        "filters": filters,
         "totals_by_module": data["totals_by_module"],
         "pagination": data["pagination"],
         "results": data["results"]
@@ -94,4 +111,44 @@ async def delete_search(
         "success": True,
         "message": "Registro eliminado",
         "data": result
+    }
+
+@router.patch("/activate-search")
+async def activate_search(
+    data: SearchStatusSchema
+):
+
+    result = await service.activate(
+        data
+    )
+
+    return {
+
+        "success": True,
+
+        "message":
+            "Registros activados",
+
+        "data": result
+
+    }
+
+@router.patch("/deactivate-search")
+async def deactivate_search(
+    data: SearchStatusSchema
+):
+
+    result = await service.deactivate(
+        data
+    )
+
+    return {
+
+        "success": True,
+
+        "message":
+            "Registros desactivados",
+
+        "data": result
+
     }

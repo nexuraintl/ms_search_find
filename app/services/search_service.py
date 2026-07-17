@@ -12,7 +12,8 @@ class SearchService:
         q: str,
         modulo: str,
         page: int,
-        limit: int
+        limit: int,
+        filters: dict
     ):
 
         return await self.repository.search(
@@ -20,7 +21,8 @@ class SearchService:
             q=q,
             modulo=modulo,
             page=page,
-            limit=limit
+            limit=limit,
+            filters=filters
         )
     
     async def update(
@@ -45,4 +47,34 @@ class SearchService:
             client_id,
             modulo,
             id_rel
+        )
+    
+    async def activate(
+        self,
+        data
+    ):
+
+        return await self.repository.activate(
+
+            data.client_id,
+
+            data.modulo,
+
+            data.conditions
+
+        )
+    
+    async def deactivate(
+        self,
+        data
+    ):
+
+        return await self.repository.deactivate(
+
+            data.client_id,
+
+            data.modulo,
+
+            data.conditions
+
         )

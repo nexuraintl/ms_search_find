@@ -32,3 +32,8 @@ class SearchDeleteSchema(BaseModel):
     client_id : int
     modulo: str
     id_rel: int
+
+class SearchStatusSchema(BaseModel):
+    client_id: int
+    modulo: str
+    conditions: Dict[str, Any]
