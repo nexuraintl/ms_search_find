@@ -1,0 +1,28 @@
+# cloudbuild.yaml — repo ms_search_find
+# Usa las substituciones del trigger (ticket2_gateway_conectividad.sh, Sección 1):
+#   _SERVICE_NAME = prod-coomeva-search
+#   _REGION       = us-central1
+# $PROJECT_ID y $COMMIT_SHA son variables built-in de Cloud Build.
+
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/cloud-run-images/${_SERVICE_NAME}:$COMMIT_SHA'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/cloud-run-images/${_SERVICE_NAME}:latest'
+      - '.'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '--all-tags'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/cloud-run-images/${_SERVICE_NAME}'
+
+images:
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/cloud-run-images/${_SERVICE_NAME}:$COMMIT_SHA'
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/cloud-run-images/${_SERVICE_NAME}:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
